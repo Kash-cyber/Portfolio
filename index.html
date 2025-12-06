@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kashaf Malik | Data Science Portfolio</title>
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzM0OThkYiIvPjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPks8L3RleHQ+PC9zdmc+"
+        type="image/svg+xml">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#3498db' } } } }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Particle Background */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        html.light #particle-canvas {
+            opacity: 0.45;
+        }
+
+        html.dark #particle-canvas {
+            opacity: 0.65;
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 3rem;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -12px;
+            width: 80px;
+            height: 6px;
+            background: linear-gradient(90deg, #3498db, #8e44ad);
+            border-radius: 3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all .3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, .4);
+        }
+
+        .project-card,
+        .service-card {
+            transition: transform .3s;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-card:hover,
+        .service-card:hover {
+            transform: translateY(-12px);
+        }
+
+        .skill-pill {
+            transition: all .3s;
+        }
+
+        .skill-pill:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, .2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn .8s ease forwards;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color .3s;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: #3498db;
+            transition: width .3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Navbar -->
+    <nav class="navbar fixed w-full z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg">
+        <div class="container mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold mono">Kashaf<span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">.Malik</span></a>
+            <div class="flex items-center space-x-6">
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#about" class="nav-link text-lg">About</a>
+                    <a href="#services" class="nav-link text-lg">What I Do</a>
+                    <a href="#projects" class="nav-link text-lg">Projects</a>
+                    <a href="#skills" class="nav-link text-lg">Skills</a>
+                    <a href="#contact" class="nav-link text-lg">Contact</a>
+                </div>
+                <button id="theme-toggle"
+                    class="p-3 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition z-50">
+                    <svg id="sun-icon" class="w-6 h-6 text-yellow-500 hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <svg id="moon-icon" class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                </button>
+                <button id="mobile-menu-button" class="md:hidden z-50">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 shadow-lg">
+            <div class="container mx-auto px-6 py-4 space-y-4 text-center">
+                <a href="#about" class="block text-lg">About</a>
+                <a href="#services" class="block text-lg">What I Do</a>
+                <a href="#projects" class="block text-lg">Projects</a>
+                <a href="#skills" class="block text-lg">Skills</a>
+                <a href="#contact" class="block text-lg">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section id="about" class="pt-40 pb-32 px-6 text-center relative bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto max-w-4xl">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fadeIn">Hi, I'm <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Kashaf
+                    Malik</span></h1>
+            <p class="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 mb-10 animate-fadeIn delay-100">Just a
+                learner trying to make data less scary and more useful.</p>
+            <a href="#contact" class="btn-primary text-xl animate-fadeIn delay-200">Let's Connect</a>
+        </div>
+    </section>
+
+    <!-- What I Do -->
+    <section id="services" class="py-20 px-6 bg-white dark:bg-gray-800">
+        <div class="container mx-auto max-w-5xl">
+            <h2 class="text-4xl font-bold text-center mb-16 section-title">What I Do</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div
+                    class="service-card p-8 border-l-4 border-blue-500 bg-gray-50 dark:bg-gray-700 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Explore</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I find interesting datasets from platforms like Kaggle
+                        and explore them to uncover patterns and trends using Python (Pandas, NumPy).</p>
+                </div>
+                <div
+                    class="service-card p-8 border-l-4 border-blue-500 bg-gray-50 dark:bg-gray-700 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Process</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I clean and transform messy data into usable formats.
+                        Learning SQL and tools like Alteryx to handle large datasets efficiently.</p>
+                </div>
+                <div
+                    class="service-card p-8 border-l-4 border-blue-500 bg-gray-50 dark:bg-gray-700 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Visualize</h3>
+                    <p class="text-gray-600 dark:text-gray-300">I use Tableau, Power BI, and Matplotlib/Seaborn to
+                        create dashboards and interactive charts that tell compelling stories.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="py-24 px-6 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl font-bold text-center mb-16 section-title">My Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <a href="stock-project.html"
+                    class="project-card bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden">
+                    <div
+                        class="bg-gradient-to-br from-indigo-600 to-purple-700 h-64 flex items-center justify-center text-white">
+                        <div class="text-center">
+                            <p class="text-5xl font-bold">Tesla & GameStop Stock + Revenue Dashboard</p>
+                            <p class="text-xl">Live Dashboard</p>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4">Tesla & GameStop Stock + Revenue Dashboard</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">Live stock prices + scraped revenue →
+                            interactive dual-axis Plotly charts</p>
+                        <div class="flex flex-wrap gap-3">
+                            <span
+                                class="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-4 py-2 rounded-full text-sm">Python</span>
+                            <span
+                                class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-4 py-2 rounded-full text-sm">Plotly</span>
+                            <span
+                                class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-4 py-2 rounded-full text-sm">yfinance</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="home-credit.html"
+                    class="project-card bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden">
+                    <div
+                        class="bg-gradient-to-br from-blue-600 to-purple-700 h-64 flex items-center justify-center text-white">
+                        <div class="text-center">
+                            <p class="text-5xl font-bold">Home Credit Default Default Risk Prediction</p>
+                            <p class="text-xl">Financial ML</p>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4">Home Credit Default Risk Prediction</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">Predicting loan repayment using 300k+ rows —
+                            XGBoost, feature engineering, class imbalance</p>
+                        <div class="flex flex-wrap gap-3">
+                            <span
+                                class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-4 py-2 rounded-full text-sm">Python</span>
+                            <span
+                                class="bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-full text-sm">XGBoost</span>
+                            <span
+                                class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-4 py-2 rounded-full text-sm">Feature
+                                Engineering</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="py-20 px-6 bg-white dark:bg-gray-800">
+        <div class="container mx-auto max-w-5xl">
+            <h2 class="text-4xl font-bold text-center mb-16 section-title">Tools & Skills</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-8 text-blue-500">Analysis</h3>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Python</span>
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Pandas</span>
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">NumPy</span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-8 text-blue-500">Visualization</h3>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Plotly</span>
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Seaborn</span>
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Tableau</span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-8 text-blue-500">Wrangling</h3>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Scikit-learn</span>
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Pandas</span>
+                        <span class="skill-pill bg-gray-200 dark:bg-gray-600 px-6 py-3 rounded-full">Feature
+                            Engineering</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-24 px-6 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h2 class="text-4xl font-bold mb-12 section-title">Let's Connect</h2>
+            <p class="text-xl mb-10 text-gray-600 dark:text-gray-300">Open to internships, freelance work, or just a
+                chat!</p>
+            <div class="flex justify-center space-x-10">
+                <a href="https://github.com/Kash-cyber" target="_blank"
+                    class="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center hover:scale-110 transition">
+                    <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                </a>
+                <a href="https://www.linkedin.com/in/kashaf-malik17072004/" target="_blank"
+                    class="w-20 h-20 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center hover:scale-110 transition">
+                    <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.375c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.375h-3v-5.5c0-1.378-1.122-2.5-2.5-2.5s-2.5 1.122-2.5 2.5v5.5h-3v-10h3v1.374c.905-1.194 2.416-1.374 3.5-1.374 2.485 0 4.5 2.015 4.5 4.5v5.5z" />
+                    </svg>
+                </a>
+                <a href="mailto:kashafqaiser1707@gmail.com"
+                    class="w-20 h-20 rounded-full bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center hover:scale-110 transition">
+                    <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M20 4h-16c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-12c0-1.103-.897-2-2-2zm0 2v.511l-8 4.8-8-4.8v-.511h16zm0 2.342v9.658c0 .276-.224.5-.5.5h-15c-.276 0-.5-.224-.5-.5v-9.658l7.5 4.5 7.5-4.5z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900">
+        <p>© 2025 Kashaf Malik • Built with passion & curiosity</p>
+    </footer>
+
+    <!-- Particle Animation + Theme Toggle -->
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [], mouse = { x: null, y: null, radius: 150 };
+
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', () => { resize(); init(); });
+        window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                if (mouse.x && mouse.y) {
+                    const dx = mouse.x - this.x, dy = mouse.y - this.y;
+                    const distance = Math.hypot(dx, dy);
+                    if (distance < mouse.radius) {
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        this.x -= dx * force * 0.03;
+                        this.y -= dy * force * 0.03;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = document.documentElement.classList.contains('dark') ? '#64b5f6' : '#3498db';
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function init() {
+            particles = [];
+            const num = (canvas.width * canvas.height) / 9000;
+            for (let i = 0; i < num; i++) particles.push(new Particle());
+        }
+
+        function connect() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    const distance = Math.hypot(particles[a].x - particles[b].x, particles[a].y - particles[b].y);
+                    if (distance < 130) {
+                        const opacity = 1 - distance / 130;
+                        ctx.strokeStyle = document.documentElement.classList.contains('dark')
+                            ? `rgba(100, 180, 246, ${opacity * 0.3})`
+                            : `rgba(52, 152, 219, ${opacity * 0.2})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            connect();
+            requestAnimationFrame(animate);
+        }
+
+        // Theme Toggle
+        document.getElementById('theme-toggle')?.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        document.getElementById('mobile-menu-button')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+
+</html>

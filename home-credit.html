@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Credit Default Risk | Kashaf Malik</title>
+    <link rel="icon"
+        href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzM0OThkYiIvPjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPks8L3RleHQ+PC9zdmc+"
+        type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#3498db' } } } }</script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        html.light #particle-canvas {
+            opacity: 0.45;
+        }
+
+        html.dark #particle-canvas {
+            opacity: 0.65;
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 3rem;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -12px;
+            width: 80px;
+            height: 6px;
+            background: linear-gradient(90deg, #3498db, #8e44ad);
+            border-radius: 3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all .3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, .4);
+        }
+
+        .card {
+            transition: transform .3s;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn .8s ease forwards;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 40%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Navbar -->
+    <nav class="navbar fixed w-full z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg">
+        <div class="container mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="resume.html" class="text-2xl font-bold mono">Kashaf<span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">.Malik</span></a>
+            <div class="flex items-center space-x-6">
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="resume.html#about" class="hover:text-blue-500 transition">About</a>
+                    <a href="resume.html#projects" class="hover:text-blue-500 transition">Projects</a>
+                    <a href="resume.html#contact" class="hover:text-blue-500 transition">Contact</a>
+                </div>
+                <button id="theme-toggle"
+                    class="p-3 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition z-50">
+                    <svg id="sun-icon" class="w-6 h-6 text-yellow-500 hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <svg id="moon-icon" class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-40 pb-32 px-6 text-center relative hero-gradient">
+        <div class="container mx-auto max-w-5xl">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white drop-shadow-2xl animate-fadeIn">
+                Home Credit Default Risk Prediction
+            </h1>
+            <p
+                class="text-2xl md:text-3xl text-white/90 mb-10 max-w-4xl mx-auto animate-fadeIn delay-100 leading-relaxed">
+                My first serious attempt at real-world credit risk modeling — still in progress, still learning every
+                day
+            </p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center animate-fadeIn delay-200">
+                <a href="https://github.com/Kash-cyber/home-credit-default-risk" target="_blank"
+                    class="btn-primary text-xl">View on GitHub</a>
+                <a href="resume.html"
+                    class="text-white border-2 border-white px-10 py-4 rounded-full font-semibold hover:bg-white/10 transition">Back
+                    to Portfolio</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Real Story -->
+    <section class="py-20 px-6 bg-white dark:bg-gray-800">
+        <div class="container mx-auto max-w-4xl">
+            <h2
+                class="text-4xl font-bold text-center mb-16 section-title text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+                Why I Started This (and What I’m Learning)
+            </h2>
+            <div class="space-y-8 text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+                <p>After finishing the stock visualization project, I wanted something harder — something that actually
+                    felt like real data science.</p>
+
+                <p>I found the Home Credit Default Risk competition on Kaggle. It’s old (2018), the leaderboard is
+                    closed, and it’s known for being one of the toughest tabular datasets out there — over 300,000 rows,
+                    120+ columns, 7 linked tables, and only ~8% positive class. Perfect.</p>
+
+                <p class="text-center text-2xl font-medium my-10 italic text-blue-600 dark:text-blue-400">
+                    “If I can make sense of this mess, I can handle anything.”
+                </p>
+
+                <p>I’m still working on it — slowly, one notebook at a time — because this is the first project where
+                    I’m doing everything myself: no tutorial, no copy-paste solutions.</p>
+
+                <div class="grid md:grid-cols-2 gap-8 my-12">
+                    <div
+                        class="card bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-2xl font-bold mb-5 text-blue-600 dark:text-blue-400">What I’ve Done So Far</h3>
+                        <ul class="list-disc list-inside space-y-3">
+                            <li>Loaded and merged all 7 tables (application, bureau, POS, etc.)</li>
+                            <li>Created 50+ new features (debt ratios, payment discipline, credit utilization trends)
+                            </li>
+                            <li>Trained baseline Logistic Regression → Random Forest → XGBoost</li>
+                            <li>Reached ~0.78 ROC-AUC locally (still far from top solutions, but improving)</li>
+                        </ul>
+                    </div>
+                    <div
+                        class="card bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-2xl font-bold mb-5 text-purple-600 dark:text-purple-400">What I’m Learning</h3>
+                        <ul class="list-disc list-inside space-y-3">
+                            <li>How messy real financial data actually is</li>
+                            <li>Feature engineering is 90% of the battle</li>
+                            <li>Class imbalance is brutal (SMOTE, scale_pos_weight, undersampling)</li>
+                            <li>Patience — progress is slow, but every run teaches me something</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="text-center text-xl italic text-gray-600 dark:text-gray-400">
+                    This project isn’t finished. But it’s the one that’s teaching me the most — and honestly, that’s the
+                    whole point.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="py-20 px-6 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto max-w-5xl">
+            <h2
+                class="text-4xl font-bold text-center mb-16 section-title text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+                Tools & Libraries Used
+            </h2>
+            <div class="flex flex-wrap justify-center gap-5">
+                <span
+                    class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-6 py-3 rounded-full font-medium">Python</span>
+                <span
+                    class="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-6 py-3 rounded-full font-medium">Pandas
+                    & NumPy</span>
+                <span
+                    class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-6 py-3 rounded-full font-medium">XGBoost</span>
+                <span
+                    class="bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 px-6 py-3 rounded-full font-medium">Scikit-learn</span>
+                <span
+                    class="bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 px-6 py-3 rounded-full font-medium">Seaborn</span>
+                <span
+                    class="bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 px-6 py-3 rounded-full font-medium">Feature
+                    Engineering</span>
+                <span
+                    class="bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 px-6 py-3 rounded-full font-medium">SMOTE</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 bg-gray-800 dark:bg-gray-900 text-white text-center">
+        <p>© 2025 Kashaf Malik • Built with passion & curiosity</p>
+    </footer>
+
+    <!-- Particle + Theme Script -->
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [], mouse = { x: null, y: null, radius: 150 };
+        function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+        window.addEventListener('resize', () => { resize(); init(); });
+        window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1; this.speedX = Math.random() * 1 - 0.5; this.speedY = Math.random() * 1 - 0.5;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                if (mouse.x && mouse.y) {
+                    const dx = mouse.x - this.x, dy = mouse.y - this.y, dist = Math.hypot(dx, dy);
+                    if (dist < mouse.radius) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        this.x -= dx * force * 0.03; this.y -= dy * force * 0.03;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = document.documentElement.classList.contains('dark') ? '#64b5f6' : '#3498db';
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function init() {
+            particles = []; const num = (canvas.width * canvas.height) / 9000;
+            for (let i = 0; i < num; i++) particles.push(new Particle());
+        }
+        function connect() {
+            for (let a = 0; a < particles.length; a++) for (let b = a; b < particles.length; b++) {
+                const dist = Math.hypot(particles[a].x - particles[b].x, particles[a].y - particles[b].y);
+                if (dist < 130) {
+                    const opacity = 1 - dist / 130;
+                    ctx.strokeStyle = document.documentElement.classList.contains('dark')
+                        ? `rgba(100, 180, 246, ${opacity * 0.3})` : `rgba(52, 152, 219, ${opacity * 0.2})`;
+                    ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particles[a].x, particles[a].y);
+                    ctx.lineTo(particles[b].x, particles[b].y); ctx.stroke();
+                }
+            }
+        }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); }); connect(); requestAnimationFrame(animate);
+        }
+
+        document.getElementById('theme-toggle')?.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        init(); animate();
+    </script>
+</body>
+
+</html>
